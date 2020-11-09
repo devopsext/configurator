@@ -1,0 +1,99 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: admin-role
+  namespace: proxy-lg
+rules:
+  - apiGroups:
+      - '*'
+    resources:
+      - '*'
+    verbs:
+      - '*'
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: admin-role-binding
+  namespace: proxy-lg
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: admin-role
+subjects:
+  - kind: ServiceAccount
+    name: admin
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-role-binding-rt-cfg-ctrl
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: admin
+    namespace: proxy-lg
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: admin
+  namespace: proxy-lg
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: rt-cfg-ctrl-test
+  name: rt-cfg-ctrl-test
+  namespace: proxy-lg
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rt-cfg-ctrl-test
+  template:
+    metadata:
+      labels:
+        app: rt-cfg-ctrl-test
+    spec:
+      containers:
+        - command:
+          - /entrypoint
+          image: registry.test.env/service/collector/pod:1.13.0.5-4.0.1_rt-ctrl2
+          imagePullPolicy: Always
+          name: rt-ctrl-test
+          env:
+          - name: COLLECTOR_OUTPUTS_PROMETHEUS_PORT
+            value: "60001"
+          - name: COLLECTOR_OUTPUTS_KAFKA_ENABLED
+            value: "false"
+          - name: COLLECTOR_OUTPUTS_STACKDRIVER_ENABLE
+            value: "false"
+          - name: COLLECTOR_OUTPUTS_CLOUDWATCH_ENABLE
+            value: "false"
+          - name: COLLECTOR_OUTPUTS_CLOUDWATCH_LOGS_ENABLE
+            value: "false"
+          - name:  COLLECTOR_ALIYUN_LOGS_SERVICE_ENABLE
+            value: "false"
+          - name: COLLECTOR_METRIC_INPUTS_INFLUXDB_LISTENER_ENABLED
+            value: "false"
+
+          - name:  COLLECTOR_LOG_INPUTS_SOCKET_LISTENER_PORT
+            value: "61001"
+          - name:  COLLECTOR_EVENT_INPUTS_SOCKET_LISTENER_PORT
+            value: "63001"
+          - name:  COLLECTOR_METRIC_INPUTS_SOCKET_LISTENER_PORT
+            value: "62001"
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+      serviceAccount: admin
+
+#rt-cfg-ctrl --config=/etc/rt-cfg-ctrl/config.yaml --namespace=proxy-lg --podname=${POD_NAME}

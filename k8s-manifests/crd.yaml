@@ -1,0 +1,97 @@
+apiVersion: apiextensions.k8s.io/v1beta1 # Deprecated in v1.16 in favor of apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: generics.rtcfg.dvext.io #foos.samplecontroller.k8s.io
+spec:
+  group: rtcfg.dvext.io #samplecontroller.k8s.io
+  versions:
+    - name: v1alpha1
+      # Each version can be enabled/disabled by Served flag.
+      served: true
+      # One and only one version must be marked as the storage version.
+      storage: true
+  validation:
+    openAPIV3Schema:
+      type: object
+      properties:
+        selector: #Label selector for workloads
+          type: object
+          properties:
+            matchLabels:
+              type: object
+              #type: array
+              #  items:
+              #    type: string
+        spec: #If smth changed in object spec, then it triggers next generation + next RV
+          type: object
+          properties:
+            service: #service name which object is applied (s6 service name)
+              type: string
+            config:
+              type: object
+              properties:
+                parameters: #some parameters, arbitrary key value pairs
+                  type: object
+#        status:
+#          type: object
+#          properties:
+#            seenBy:
+#              type: integer
+
+  subresources:
+    status: {} # status enables the status subresource.
+    #  In this case, any updates to status  (via dedicated endpoint!) is not triggering new generation but triggers new rv
+  names:
+    kind: Generic
+    plural: generics
+  scope: Namespaced
+---
+#apiVersion: apiextensions.k8s.io/v1
+#kind: CustomResourceDefinition
+#metadata:
+#  name: generics.rtcfg.dvext.io #foos.samplecontroller.k8s.io
+#spec:
+#  group: rtcfg.dvext.io #samplecontroller.k8s.io
+#  preserveUnknownFields: true #For future migration to apiextensions.k8s.io/v1
+#  versions:
+#    - name: v1alpha1
+#      # Each version can be enabled/disabled by Served flag.
+#      served: true
+#      # One and only one version must be marked as the storage version.
+#      storage: true
+#      schema:
+#        openAPIV3Schema:
+#          type: object
+#          properties:
+#            selector: #Label selector for workloads
+#              type: object
+#              properties:
+#                matchLabels:
+#                  type: object
+#            spec:
+#              type: object
+#              properties:
+#                service: #service name which object is applied (s6 service name)
+#                  type: string
+#                config:
+#                  type: object
+#                  properties:
+#                    parameters: #some parameters, so far not quite clear what are they
+#                      type: string
+#                    reload: #either url to fire request against or commands to execute
+#                      type: string
+#
+#                reloadType: #how to reload service. Valid values: execComand, httpRequest
+#                  type: string
+#                  pattern: '^(execComand|httpRequest)$'
+#            #status:
+#            #  type: object
+#            #  properties:
+#            #    seenBy:
+#            #      type: integer
+#      subresources:
+#        status: { } # status enables the status subresource.
+#  names:
+#    kind: Generic
+#    plural: generics
+#  scope: Namespaced

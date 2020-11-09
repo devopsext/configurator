@@ -1,0 +1,23 @@
+- pid_finder:
+    supervised_service_name: "collector"
+    service_pattern: '^syslogd$'
+    parent_pattern: '^launchd$'
+
+  config:
+
+    parameters:
+      alternative_configs.trace.interpreter: "bash -c"
+      alternative_configs.trace.enableCommand: "echo -n '/etc/telegraf/collector.template.trace' > /var/run/s6/container_environment/COLLECTOR_TEMPLATE"
+      alternative_configs.trace.disableCommand: "rm -rf /var/run/s6/container_environment/COLLECTOR_TEMPLATE"
+      alternative_configs.trace.reloadCommand: "s6-svc -d /services/s_collector/run && s6-svc -u /services/s_collector/run"
+
+#- pid_finder:
+#    supervised_service_name: "aaaa"
+#    service_pattern: '^.*$'
+#    parent_pattern: '^.*$'
+#
+#  config:
+#    standard_config: '/path/to/std/config2'
+#    parameters:
+#      config1: "/path/to/config/21"
+#      config2: "/path/to/config/22"

@@ -1,0 +1,24 @@
+apiVersion: rtcfg.dvext.io/v1alpha1
+kind: Generic
+metadata:
+  name: example-foo
+  namespace: proxy-lg
+selector:
+  matchLabels:
+    app: rt-cfg-ctrl-test
+spec:
+  service: collector
+  config:
+    parameters:
+      alternative_configs.trace: "true"
+      #alternative_configs.trace2: "true"
+
+
+#apiVersion: rtcfg.dvext.io/v1alpha1
+#kind: Generic
+#metadata:
+#  name: example-foo
+#  namespace: default
+#spec:
+#  deploymentName: example-foo18
+#  replicas: 1
