@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Configurator
 Simple k8s controller, that is intented to run in a container, that
 will listen for specific CRD and inject configuration
@@ -78,3 +79,6 @@ Configuration file example:
       alternative_configs.trace.disableCommand: "rm -rf /var/run/s6/container_environment/COLLECTOR_TEMPLATE"
       alternative_configs.trace.reloadCommand: "s6-svc -d /services/s_collector/run && s6-svc -u /services/s_collector/run"
 ```
+=======
+# runtime-cfg-op
+>>>>>>> 2dbdf99... Initial commit

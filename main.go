@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"time"
 
@@ -21,12 +22,22 @@ var (
 	config string
 	selfNamespace string
 	selfPodName string
+
+	bVersion bool
+	version string
+	commit  string
 )
 
 //TODO: Add metrics in prometheus format
 func main() {
 	klog.InitFlags(nil)
 	flag.Parse()
+
+	//Print version & exit
+	if bVersion {
+		fmt.Printf("Version %s, commit: %s\n", version, commit)
+		return
+	}
 
 	if config == "" || selfNamespace=="" || selfPodName==""  {
 		flag.Usage()
@@ -79,4 +90,5 @@ func init() {
 	flag.StringVar(&config, "config", "", "Path to controller config file.")
 	flag.StringVar(&selfNamespace, "namespace", "", "k8s namespace where this application runs.")
 	flag.StringVar(&selfPodName, "podname", "", "k8s pod name where this application runs.")
+	flag.BoolVar(&bVersion,"version", false, "Print version")
 }
