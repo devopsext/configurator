@@ -5,7 +5,7 @@ metadata:
   namespace: proxy-lg
 selector:
   matchLabels:
-    app: rt-cfg-ctrl-test
+    app: proxy-lg
 spec:
   service: collector
   config:

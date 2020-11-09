@@ -324,7 +324,7 @@ func (c *Controller) needToSync(key string, generic *samplev1alpha1.Generic) (bo
 		}
 
 		if matchedLabels != len(generic.Selector.MatchLabels) {
-			return false, fmt.Sprintf("mismatched labels in pod: %v and\n generic selector: %v", c.selfLabels, generic.Labels)
+			return false, fmt.Sprintf("mismatched labels in pod: %v and\n generic selector: %v", c.selfLabels, generic.Selector.MatchLabels)
 		}
 	}
 
