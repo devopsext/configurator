@@ -1,4 +1,7 @@
-![GitHub Logo](images/logo.png)
+<p align="center">
+<img src="https://github.com/devopsext/configurator/blob/master/images/logo.png?raw=true">
+</p>
+
 # Configurator
 Simple k8s controller, that is intended to run in a container, that
 will listen for specific CRD and inject the configuration into sibling services (in the same container) in a runtime.
